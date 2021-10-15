@@ -4,13 +4,7 @@ mod bootstrap;
 
 use std::convert::TryFrom;
 
-use bindings::{
-    Microsoft,
-    Microsoft::UI::Xaml::{
-        Application, ApplicationInitializationCallback, Controls::Button, HorizontalAlignment,
-        IWindowNative, LaunchActivatedEventArgs, RoutedEventHandler, Window,
-    },
-    Windows::Win32::{
+use bindings::{Microsoft, Microsoft::UI::Xaml::{Application, ApplicationInitializationCallback, Controls::{Button, XamlControlsResources}, HorizontalAlignment, IWindowNative, LaunchActivatedEventArgs, ResourceDictionary, RoutedEventHandler, Window}, Windows::Win32::{
         Foundation::{HWND, RECT},
         UI::{
             HiDpi::GetDpiForWindow,
@@ -19,8 +13,7 @@ use bindings::{
                 SWP_NOMOVE, SWP_NOSIZE,
             },
         },
-    },
-};
+    }};
 
 use windows::{implement, IInspectable, Interface};
 
@@ -32,6 +25,9 @@ struct App {
 #[allow(non_snake_case)]
 impl App {
     fn OnLaunched(&mut self, _: &Option<LaunchActivatedEventArgs>) -> windows::Result<()> {
+        let app: Application = self.cast()?;
+        app.SetResources(XamlControlsResources::new()?.cast::<ResourceDictionary>()?)?;
+
         let window = Window::new()?;
         window.SetTitle("WinUI Desktop, Unpackaged (Rust)")?;
 
